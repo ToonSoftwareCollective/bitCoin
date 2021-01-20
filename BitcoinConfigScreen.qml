@@ -9,7 +9,7 @@ Screen {
 	property string coins: ""
 	property string coinsURL : "https://raw.githubusercontent.com/ToonSoftwareCollective/toonanimations/main/bitcoins.txt"
 	property variant  coinsArray : []
-	property variant  selectedCoinsArray : []
+	property variant  selectedCoinsArray
 	property int  numberofItems :0
 	property string	selectedTileCoin: ""
 
@@ -184,8 +184,8 @@ Screen {
 			topMargin: isNxt? 5: 4
 			}
 		onClicked: {
-			var exists = false
-			var selectedCoin = (coinsArray[listview1.currentIndex]).toLowerCase().trim()
+			var exists = false			
+			var selectedCoin = coinsArray[listview1.currentIndex].toLowerCase().trim()
 			for (var i in selectedCoinsArray){
 				if (selectedCoin == selectedCoinsArray[i].toLowerCase().trim()){
 					exists = true
@@ -225,12 +225,12 @@ Screen {
 		text: "Geselecteerd voor tegel: " + selectedTileCoin
 		font {
 			family: qfont.semiBold.name
-			pixelSize: isNxt ? 18:14
+			pixelSize: isNxt ? 20:16
 		}
 		anchors {
-			top: addTile.bottom
-			left:addTile.bottom
-			topMargin: isNxt? 5: 4
+			top: addText.bottom
+			left:addText.left
+			topMargin: isNxt? 10: 8
 		}
 	}
 
@@ -359,6 +359,20 @@ Screen {
 				selectedCoinsArray.splice(listview2.currentIndex, 1);
 			}
 		}
+	}
+	
+	Column {
+		id: columnContainer2
+		width: parent.width
+		anchors {
+			bottom: parent.bottom
+			bottomMargin: isNxt ? 8:6
+			left:parent.left
+			leftMargin: isNxt ? 8:6
+		}
+		
+		Text {font.pixelSize: isNxt ? 12:10; font.family: qfont.semiBold.name; text:"All rights reserved. Nor TSC Team or the writer of this app can be held repsonsible for the correctness of all or parts of data data discplayed." }
+		Text {font.pixelSize: isNxt ? 12:10; font.family: qfont.semiBold.name; text:"For correct data and values we would like to refer to the official datasources. Please use the internet to find so." }
 	}
 }
 
