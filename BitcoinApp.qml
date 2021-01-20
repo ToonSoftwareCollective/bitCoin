@@ -106,6 +106,11 @@ App {
 				if (xhr2.readyState === XMLHttpRequest.DONE) {
 					if (xhr2.status === 200) {
 						var response = xhr2.responseText
+						//get all cryptos
+						//var newArray6 = xhr2.responseText.split("<img class=\"coin-logo\"")
+						//for (var a6 in newArray6){
+						//	console.log("*******************Bitcoin newArray6(a6) : "  + a6  + "----" + newArray6[a6])
+						//}
 						if (response.indexOf("<title>Cryptocurrency Prices") >0){ //it is a valid site
 							if (selectedTileCoin != ""){ //fil dayTile
 								dayTile[0] = selectedTileCoin
