@@ -102,7 +102,7 @@ Tile {
 
 	}
 
-	Rectangle { 
+/*	Rectangle { 
 		id: bulletCircle
 		width: 10 
 		height: 10 
@@ -123,6 +123,7 @@ Tile {
 		running: true
 		onTriggered: {blink= !blink}
 	}
+*/
 		
 }
 	
