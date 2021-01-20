@@ -21,7 +21,7 @@ App {
 		property variant 	items
 		property int 		numberofrows : 13
 		property int 		numberofcolumns : 7
-		property variant 	selectedCoinsArray
+		property variant 	selectedCoinsArray : []
 		property string		selectedTileCoin
 		
 		property variant 	dayTile :["","","","","","",""]
@@ -48,6 +48,8 @@ App {
 		
 			var array = create2DArray(numberofrows,numberofcolumns)
 			items = array
+			//var array2 = []
+			//selectedCoinsArray = array2
 			
 			try {
 				var bitcoinsString = bitcoin_selectedCoins.read() ; 
@@ -77,9 +79,6 @@ App {
 			
 		}
 		
-		
-		
-		
 		function create2DArray(rows,columns) {
 		   var x = new Array(rows);
 		   for (var i = 0; i < rows; i++) {
@@ -87,6 +86,15 @@ App {
 				for (var c = 0; c < columns; c++) {
 					x[i][c] = ""  //make it a string array
 				}
+		   }
+		   return x;
+        }
+		
+		function create1DArray(rows) {
+		   var x = new Array(rows);
+		   for (var i = 0; i < rows; i++) {
+				x[i] = ""  //make it a string array
+
 		   }
 		   return x;
         }
@@ -106,11 +114,6 @@ App {
 				if (xhr2.readyState === XMLHttpRequest.DONE) {
 					if (xhr2.status === 200) {
 						var response = xhr2.responseText
-						//get all cryptos
-						//var newArray6 = xhr2.responseText.split("<img class=\"coin-logo\"")
-						//for (var a6 in newArray6){
-						//	console.log("*******************Bitcoin newArray6(a6) : "  + a6  + "----" + newArray6[a6])
-						//}
 						if (response.indexOf("<title>Cryptocurrency Prices") >0){ //it is a valid site
 							if (selectedTileCoin != ""){ //fil dayTile
 								dayTile[0] = selectedTileCoin
@@ -118,22 +121,28 @@ App {
 								var n12 = response.indexOf("<img class=\"coin-logo\" src=\"",n10) + ("<img class=\"coin-logo\" src=\"").length
 								var n14 = response.indexOf("\"",n12)
 								dayTile[1] = response.substring(n12,n14)
+								if (dayTile[1].length>100){dayTile[1] = ""}
 								var n20 = response.indexOf("<a href=\"/currencies/" + selectedTileCoin , n14) + 5
 								var n21 = response.indexOf("/markets/\" class=\"cmc-link\">" , n20) + ("/markets/\" class=\"cmc-link\">").length
 								var n22 = response.indexOf("</a>",n21)
 								dayTile[2]= response.substring(n21,n22)
+								if (dayTile[2].length>10){dayTile[2] = "n/a"}
 								var n30 = response.indexOf("<span class=\"icon-Caret-" , n22)+ ("<span class=\"icon-Caret-").length
 								var n32 = response.indexOf("\">",n30)
 								dayTile[3] = response.substring(n30,n32)
+								if (dayTile[3].length>10){dayTile[3] = "n/a"}
 								var n40 = response.indexOf("></span>" , n32) + ("></span>").length
 								var n42 = response.indexOf("</span>",n40)
 								dayTile[4] = response.substring(n40,n42)
+								if (dayTile[4].length>10){dayTile[4] = "n/a"}
 								var n50 = response.indexOf("<span class=\"icon-Caret-" , n42)+ ("<span class=\"icon-Caret-").length
 								var n52 = response.indexOf("\">",n50)
 								dayTile[5] = response.substring(n50,n52)
+								if (dayTile[5].length>10){dayTile[5] = "n/a"}
 								var n60 = response.indexOf("></span>" , n52) + ("></span>").length
 								var n62 = response.indexOf("</span>",n60)
 								dayTile[6] = response.substring(n60,n62)
+								if (dayTile[6].length>10){dayTile[6] = "n/a"}
 							}
 
 							for(var x in items){
@@ -146,6 +155,7 @@ App {
 										var n12 = response.indexOf("<img class=\"coin-logo\" src=\"",n10) + ("<img class=\"coin-logo\" src=\"").length
 										var n14 = response.indexOf("\"",n12)
 										items[x][1] = response.substring(n12,n14)
+										if (items[x][1].length>100){items[x][1] = ""}
 										//console.log("*******************Bitcoin bitcoinImgUrl : "  + items[x][1])
 
 										var n20 = response.indexOf("<a href=\"/currencies/" + items[x][0].toLowerCase() , n14) + 5
@@ -156,26 +166,31 @@ App {
 										var n22 = response.indexOf("</a>",n21)
 										//console.log("*******************Bitcoin n22 "  + n22)
 										items[x][2]= response.substring(n21,n22)
+										if (items[x][2].length>10){items[x][2] = "n/a"}
 										//console.log("*******************Bitcoin " + items[x][0] + " Value : "  + items[x][2])
 
 										var n30 = response.indexOf("<span class=\"icon-Caret-" , n22)+ ("<span class=\"icon-Caret-").length
 										var n32 = response.indexOf("\">",n30)
 										items[x][3] = response.substring(n30,n32)
+										if (items[x][3].length>10){items[x][3] = "n/a"}
 										//console.log("*******************Bitcoin " + items[x][0] + " UpDown : "  + items[x][3])
 
 										var n40 = response.indexOf("></span>" , n32) + ("></span>").length
 										var n42 = response.indexOf("</span>",n40)
 										items[x][4] = response.substring(n40,n42)
+										if (items[x][4].length>10){items[x][4] = "n/a"}
 										//console.log("*******************Bitcoin " + items[x][0] + " DayChange : "  + items[x][4])
 
 										var n50 = response.indexOf("<span class=\"icon-Caret-" , n42)+ ("<span class=\"icon-Caret-").length
 										var n52 = response.indexOf("\">",n50)
 										items[x][5] = response.substring(n50,n52)
+										if (items[x][5].length>10){items[x][5] = "n/a"}
 										//console.log("*******************Bitcoin " + items[x][0] + " UpDownWk : "  + items[x][5])
 
 										var n60 = response.indexOf("></span>" , n52) + ("></span>").length
 										var n62 = response.indexOf("</span>",n60)
 										items[x][6] = response.substring(n60,n62)
+										if (items[x][6].length>10){items[x][6] = "n/a"}
 										
 									}//item[x][0] is not empty
 								}//item[x][0] is not undefined

@@ -90,6 +90,9 @@ Screen {
 			}
 		}
 	}
+	
+
+	
 
 	Rectangle { 
 		id: bulletCircle
