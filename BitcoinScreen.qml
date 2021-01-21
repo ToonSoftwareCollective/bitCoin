@@ -12,7 +12,7 @@ Screen {
 	property string fontName : "qfont.semiBold.name"
 	property int leftShift : isNxt ? 100:80
 	property int rowheight : isNxt ? 40:32
-	property int imageheight : isNxt ? 48:30
+	property int imageheight : isNxt ? 38:30
 	property int left1 : leftShift + parent.width* 3/100
 	property int left2 : leftShift + parent.width* 10/100
 	property int left3 : leftShift + parent.width* 30/100
