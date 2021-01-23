@@ -11,15 +11,20 @@ App {
 		id: bitcoinApp
 
 		property url 		tileUrl : "BitcoinTile.qml"
+		property url 		tile2Url : "BitcoinTile2.qml"
+
 		property url 		thumbnailIcon: "qrc:/tsc/BitcoinIcon.png"
-		property 		    BitcoinTile bitcoinTile
+		property 		  	BitcoinTile bitcoinTile
+		property 		  	BitcoinTile2 bitcoinTile2
+
 		property			BitcoinScreen  bitcoinScreen
 		property url 		bitcoinScreenUrl : "BitcoinScreen.qml"
 		property			BitcoinConfigScreen  bitcoinConfigScreen
 		property url 		bitcoinConfigScreenUrl : "BitcoinConfigScreen.qml"
-		property url 		scraperUrl : "https://coinmarketcap.com/"
+		property url 		scraperUrl : "https://www.worldcoinindex.com/setcurrency?currency=EUR"
+		property url 		imageBaseUrl : "https://www.worldcoinindex.com"
 		property variant 	items
-		property int 		numberofrows : 13
+		property int 		numberofrows : 120
 		property int 		numberofcolumns : 7
 		property variant 	selectedCoinsArray : []
 		property string		selectedTileCoin
@@ -33,7 +38,25 @@ App {
 		property string		selectedTile7d
 		property string		selectedUd2
 		property string		selectedTile24h
-
+		
+		property int 		cryptoSwitch:1
+		
+		property variant 	lastPrice : ["","","","","","","","","","","","",""]
+		property bool 		cryptoDataRead : false
+		property string 	tileCrypt :  ""
+		property string 	tileValue :  ""
+		property string 	tileLowValue : ""
+		property string 	tileHighValue  : ""
+		property string 	tileVol : ""
+		property string 	tileKop5 : ""
+		property string 	tileURL  : ""
+		property string 	val : "usd"
+		property string 	imageURL : "usd"
+		property real 		lowValue : 0.00
+		property real 		highValue : 0.00
+		property real 		volumeValue : 0.00
+		property string 	colourBTC : "black"
+		property real 		newPrice : 0		
 
 		property variant bitcoinSettingsJson : {
 			'selectedTileCoin': ""
@@ -48,9 +71,7 @@ App {
 		
 			var array = create2DArray(numberofrows,numberofcolumns)
 			items = array
-			//var array2 = []
-			//selectedCoinsArray = array2
-			
+
 			try {
 				var bitcoinsString = bitcoin_selectedCoins.read() ; 
 				if (bitcoinsString.length >2 ){
@@ -76,6 +97,9 @@ App {
 			}
 			
 			dayTile[0] = selectedTileCoin
+			
+			datetimeTimerFiles.running = true;
+			coinTimer.running = true;
 			
 		}
 		
@@ -103,101 +127,96 @@ App {
 			registry.registerWidget("screen", bitcoinConfigScreenUrl, this, "bitcoinConfigScreen")
 			registry.registerWidget("screen", bitcoinScreenUrl, this, "bitcoinScreen")
 			registry.registerWidget("tile", tileUrl, this, "bitcoinTile", {thumbLabel: qsTr("Bitcoin"), thumbIcon: thumbnailIcon, thumbCategory: "general", thumbWeight: 30, baseTileWeight: 10, baseTileSolarWeight: 10, thumbIconVAlignment: "center"})
+			registry.registerWidget("tile", tile2Url, this, "bitcoinTile2", {thumbLabel: qsTr("BTC Ticker"), thumbIcon: thumbnailIcon, thumbCategory: "general", thumbWeight: 30, baseTileWeight: 10, baseTileSolarWeight: 10, thumbIconVAlignment: "center"})
 		}
 		
-
 		function getURL() {
-			////console.log("*******************Bitcoin app getURL started")
+			//console.log("*******************Bitcoin app getURL started")
 			var xhr2 = new XMLHttpRequest();
 			xhr2.open("GET", scraperUrl, true); //check the feeds from the webpage
 			xhr2.onreadystatechange = function() {
 				if (xhr2.readyState === XMLHttpRequest.DONE) {
 					if (xhr2.status === 200) {
 						var response = xhr2.responseText
-						if (response.indexOf("<title>Cryptocurrency Prices") >0){ //it is a valid site
+						var reLength = response.length
+							var n10 = response.indexOf("<table id=\"myTable\" class=\"tablesorter")
+							var n11 = response.indexOf("<tbody>",n10)
+							response = response.substring(n11,reLength)
+
 							if (selectedTileCoin != ""){ //fil dayTile
 								dayTile[0] = selectedTileCoin
-								var n10 = response.indexOf("a href=\"/currencies/" + selectedTileCoin + "/\" class=\"cmc-link\">")
-								var n12 = response.indexOf("<img class=\"coin-logo\" src=\"",n10) + ("<img class=\"coin-logo\" src=\"").length
-								var n14 = response.indexOf("\"",n12)
-								dayTile[1] = response.substring(n12,n14)
-								if (dayTile[1].length>100){dayTile[1] = ""}
-								var n20 = response.indexOf("<a href=\"/currencies/" + selectedTileCoin , n14) + 5
-								var n21 = response.indexOf("/markets/\" class=\"cmc-link\">" , n20) + ("/markets/\" class=\"cmc-link\">").length
-								var n22 = response.indexOf("</a>",n21)
-								dayTile[2]= response.substring(n21,n22)
-								if (dayTile[2].length>10){dayTile[2] = "n/a"}
-								var n30 = response.indexOf("<span class=\"icon-Caret-" , n22)+ ("<span class=\"icon-Caret-").length
-								var n32 = response.indexOf("\">",n30)
-								dayTile[3] = response.substring(n30,n32)
-								if (dayTile[3].length>10){dayTile[3] = "n/a"}
-								var n40 = response.indexOf("></span>" , n32) + ("></span>").length
-								var n42 = response.indexOf("</span>",n40)
-								dayTile[4] = response.substring(n40,n42)
-								if (dayTile[4].length>10){dayTile[4] = "n/a"}
-								var n50 = response.indexOf("<span class=\"icon-Caret-" , n42)+ ("<span class=\"icon-Caret-").length
-								var n52 = response.indexOf("\">",n50)
-								dayTile[5] = response.substring(n50,n52)
-								if (dayTile[5].length>10){dayTile[5] = "n/a"}
-								var n60 = response.indexOf("></span>" , n52) + ("></span>").length
-								var n62 = response.indexOf("</span>",n60)
-								dayTile[6] = response.substring(n60,n62)
-								if (dayTile[6].length>10){dayTile[6] = "n/a"}
 							}
-
-							for(var x in items){
-								if (typeof items[x][0] != 'undefined'){
-									if (items[x][0].length > 2){
-										
-										//console.log("*******************Bitcoin scraping for  : "  + items[x][0])
-
-										var n10 = response.indexOf("a href=\"/currencies/" + items[x][0].toLowerCase() + "/\" class=\"cmc-link\">")
-										var n12 = response.indexOf("<img class=\"coin-logo\" src=\"",n10) + ("<img class=\"coin-logo\" src=\"").length
-										var n14 = response.indexOf("\"",n12)
-										items[x][1] = response.substring(n12,n14)
-										if (items[x][1].length>100){items[x][1] = ""}
-										//console.log("*******************Bitcoin bitcoinImgUrl : "  + items[x][1])
-
-										var n20 = response.indexOf("<a href=\"/currencies/" + items[x][0].toLowerCase() , n14) + 5
-										//console.log("*******************Bitcoin n20 "  + n20)
-										
-										var n21 = response.indexOf("/markets/\" class=\"cmc-link\">" , n20) + ("/markets/\" class=\"cmc-link\">").length
-										//console.log("*******************Bitcoin n21 "  + n21)
-										var n22 = response.indexOf("</a>",n21)
-										//console.log("*******************Bitcoin n22 "  + n22)
-										items[x][2]= response.substring(n21,n22)
-										if (items[x][2].length>10){items[x][2] = "n/a"}
-										//console.log("*******************Bitcoin " + items[x][0] + " Value : "  + items[x][2])
-
-										var n30 = response.indexOf("<span class=\"icon-Caret-" , n22)+ ("<span class=\"icon-Caret-").length
-										var n32 = response.indexOf("\">",n30)
-										items[x][3] = response.substring(n30,n32)
-										if (items[x][3].length>10){items[x][3] = "n/a"}
-										//console.log("*******************Bitcoin " + items[x][0] + " UpDown : "  + items[x][3])
-
-										var n40 = response.indexOf("></span>" , n32) + ("></span>").length
-										var n42 = response.indexOf("</span>",n40)
-										items[x][4] = response.substring(n40,n42)
-										if (items[x][4].length>10){items[x][4] = "n/a"}
-										//console.log("*******************Bitcoin " + items[x][0] + " DayChange : "  + items[x][4])
-
-										var n50 = response.indexOf("<span class=\"icon-Caret-" , n42)+ ("<span class=\"icon-Caret-").length
-										var n52 = response.indexOf("\">",n50)
-										items[x][5] = response.substring(n50,n52)
-										if (items[x][5].length>10){items[x][5] = "n/a"}
-										//console.log("*******************Bitcoin " + items[x][0] + " UpDownWk : "  + items[x][5])
-
-										var n60 = response.indexOf("></span>" , n52) + ("></span>").length
-										var n62 = response.indexOf("</span>",n60)
-										items[x][6] = response.substring(n60,n62)
-										if (items[x][6].length>10){items[x][6] = "n/a"}
-										
-									}//item[x][0] is not empty
-								}//item[x][0] is not undefined
-						   } //for var
-
-					   }//site is valid
-					   bitcoinUpdated()
+							
+							var newUrl
+							var newCoin
+							var newValue
+							var newUSDEUR
+							var newPerc
+							var newArray = response.split("<tr class=")
+							for (var x in newArray){
+								//console.log("*******************Bitcoin x "  + x)
+								//console.log("*******************newArray x "  + newArray[x])
+								
+								var search1= newArray[x].substring(1,30)
+								if (search1.indexOf("coinzoeken")>0){
+									var n20 = newArray[x].indexOf("url(\'") + "url(\'".length
+									var n21 = newArray[x].indexOf("\')",n20)
+									newUrl= imageBaseUrl + newArray[x].substring(n20,n21)
+									//console.log("*******************Bitcoin [" + x + "][1]"  + x + "URL : "  + newUrl)
+									
+									var n30 = newArray[x].indexOf("<h1><span>") + "<h1><span>".length
+									var n31 = newArray[x].indexOf("</span>",n30)
+									newCoin= newArray[x].substring(n30,n31)
+									//console.log("*******************Bitcoin [" + x + "][0]"  + x + "Name : "  + newCoin)
+									
+									
+									var n40 = newArray[x].indexOf("lastprice") + "lastprice".length
+									var n42 = newArray[x].indexOf("sort-value=\"", n40) + "sort-value=\"".length
+									var n45 = newArray[x].indexOf("\"><span>",n42)
+									
+									var n47 = newArray[x].indexOf("<span>",n42)+ "<span>".length
+									var n49 = newArray[x].indexOf("</span>",n47)
+									newUSDEUR = newArray[x].substring(n47,n49)
+									newValue= newArray[x].substring(n42,n45)
+									//console.log("*******************Bitcoin [" + x + "][2]"  + x + "newUSDEUR : "  + newUSDEUR)
+									//console.log("*******************Bitcoin [" + x + "][2]"  + x + "Value : "  + newValue)
+									
+									var n50 = newArray[x].indexOf("data-percentage") + "data-percentage".length
+									var n52 = newArray[x].indexOf("<span>", n50) + "<span>".length
+									var n55 = newArray[x].indexOf("</span>",n52)
+									newPerc= newArray[x].substring(n52,n55)
+									//console.log("*******************Bitcoin [" + x + "][3]"  + x + "Perc : "  + newPerc)
+									
+									if (selectedTileCoin != "" & selectedTileCoin.toLowerCase() == newCoin.toLowerCase()){ //fil dayTile
+										dayTile[0] = selectedTileCoin
+										dayTile[1] = newUrl
+										dayTile[2] = "USD " + newValue
+										if(newPerc.indexOf("-")>-1){dayTile[3] = "down"}
+										//dayTile[4] = newPerc.substring(1,newValue.length)
+										dayTile[4] = newPerc
+									}
+									
+									for(var y in items){
+										if (typeof items[y][0] != 'undefined'){
+											if (items[y][0].length > 2  & items[y][0].toLowerCase() == newCoin.toLowerCase()){
+												items[y][0] = newCoin
+												items[y][1] = newUrl
+												items[y][2] = "USD " + newValue
+												if(newPerc.indexOf("-")>-1){items[y][3] = "down"}
+												//items[y][4] = newPerc.substring(1,newPerc.length)
+												items[y][4] = newPerc
+											}
+										}	
+									}
+									
+								}
+								
+								
+							}
+							bitcoinUpdated()
+							
+					   //}//site is valid
+					  // bitcoinUpdated()
 					}//xhr status = 200
 				}//end of xhr2.readystate
 			}//xhr onreadystate
@@ -206,12 +225,102 @@ App {
 		}
 		
 		
+		function parseCryptoinfo(cryptoTxt) {
+			var cryptoJSON 	= 	JSON.parse(cryptoTxt);
+			cryptoDataRead 	= 	true;
+			newPrice 		= 	cryptoJSON["last"]
+			tileCrypt		=	tileCrypt
+			tileValue      	=	newPrice  + " " + val
+			lowValue      	= 	cryptoJSON["low"]
+			highValue      	= 	cryptoJSON["high"]
+			volumeValue   	=	cryptoJSON["high"]
+			tileLowValue    = 	"laagste: "+Math.round(lowValue)+ " " + val
+			tileHighValue  	= 	"hoogste: "+Math.round(highValue)+ " " + val
+			tileVol       	= 	"volume 24h: "+volumeValue
+			colourBTC = "black"
+			//console.log("*******************Bitcoin colourBTC old "  + colourBTC)
+			//console.log("*******************Bitcoin newPrice "  + newPrice)
+			//console.log("*******************Bitcoin cryptoSwitch "  + cryptoSwitch)
+			//console.log("*******************Bitcoin lastPrice[cryptoSwitch] old "  + lastPrice[cryptoSwitch])
+
+			if (newPrice > lastPrice[cryptoSwitch]){
+				colourBTC = "green"
+			}
+			if (newPrice < lastPrice[cryptoSwitch]){
+				colourBTC = "red"
+			}
+			lastPrice[cryptoSwitch] = newPrice
+			//console.log("*******************Bitcoin colourBTC new "  + colourBTC)
+			//console.log("*******************Bitcoin lastPrice[cryptoSwitch] new "  + lastPrice[cryptoSwitch])
+			
+		}
+   
+		function getcryptokoers() {
+			//console.log("*******************Bitcoin app getcryptokoers started")
+			tileCrypt = ""
+			tileValue = "";
+			tileLowValue = "Please";
+			tileHighValue = "wait one";
+			tileVol  = "moment";
+			newPrice = "";
+			tileURL = "";
+			var url2
+			switch (cryptoSwitch) {
+				case 1: { url2 = "https://www.bitstamp.net/api/ticker" ; tileCrypt = "Bitcoin" ; val="usd"; break}
+				case 2: { url2 = "https://www.bitstamp.net/api/v2/ticker/btceur" ;tileCrypt = "Bitcoin" ; val="eur" ;break}
+
+				case 3: { url2 = "https://www.bitstamp.net/api/v2/ticker/xrpusd/" ; tileCrypt = "Ripple" ; val="usd"  ; break}
+				case 4: { url2 = "https://www.bitstamp.net/api/v2/ticker/xrpeur/" ; tileCrypt = "Ripple"; val="eur"; break}
+				case 5: { url2 = "https://www.bitstamp.net/api/v2/ticker/ethusd/" ; tileCrypt = "Ethereum" ; val="usd"  ; break}
+				case 6: { url2 = "https://www.bitstamp.net/api/v2/ticker/etheur/" ; tileCrypt = "Ethereum"; val="eur"; break}
+				case 7: { url2 = "https://www.bitstamp.net/api/v2/ticker/ltcusd/" ; tileCrypt = "Litecoin" ; val="usd"  ; break}
+				case 8: { url2 = "https://www.bitstamp.net/api/v2/ticker/ltceur/" ; tileCrypt = "Litecoin"; val="eur"; break}
+				case 9: { url2 = "https://www.bitstamp.net/api/v2/ticker/bchusd/" ; tileCrypt = "BitcoinCash" ; val="usd"  ; break}
+				case 10: { url2 = "https://www.bitstamp.net/api/v2/ticker/bcheur/" ; tileCrypt = "BitcoinCash";val="eur"; break}
+				// possible values : btcusd, btceur, eurusd, xrpusd, xrpeur, xrpbtc, ltcusd, ltceur, ltcbtc, ethusd, etheur, ethbtc, bchusd, bcheur, bchbtc
+				default: {break;}
+			}
+			
+			for(var y in items){
+				if (typeof items[y][0] != 'undefined'){
+					if (items[y][0].length > 1  & items[y][0].toLowerCase() == tileCrypt.toLowerCase()){
+						tileURL = items[y][1]
+					}
+				}	
+			}
+			
+			var xmlhttp = new XMLHttpRequest()
+			xmlhttp.open("GET", url2, true)
+			xmlhttp.onreadystatechange = function() {
+				if (xmlhttp.readyState === XMLHttpRequest.DONE) {
+					if ( xmlhttp.status === 200 ||  xmlhttp.status === 302) {
+						parseCryptoinfo(xmlhttp.responseText);
+					}
+				}
+			}
+			xmlhttp.send()
+		}
+
 		Timer {
-			id: voetbalTimer   //interval to scrape data
-			interval: 60000
+			id: datetimeTimerFiles
+			interval: 15000         //update every 15 sec
+			triggeredOnStart: true
+			running:   false
 			repeat: true
-			running: true
-			triggeredOnStart: false
+			onTriggered:  {
+					cryptoSwitch++;
+					if (cryptoSwitch > 10){cryptoSwitch = 1}
+					getcryptokoers()
+				}
+		}
+
+
+		Timer {
+			id: coinTimer   //interval to scrape data
+			interval: 60000
+			triggeredOnStart: true
+			running:   false
+			repeat: true
 			onTriggered: getURL()
 		}
 		
@@ -224,18 +333,16 @@ App {
 			bitcoinSettingsJson = JSON.parse(bitcoinSettingsFile.read())
 	
 			var bitcoinsSel
-			//if (selectedCoinsArray){
-				if (typeof selectedCoinsArray[0] != 'undefined'){
-					if (selectedCoinsArray[0].length > 1){
-						bitcoinsSel = selectedCoinsArray[0]
-						items[0][0]=selectedCoinsArray[0]
-						for (var t = 1; t < selectedCoinsArray.length ; t++){
-							bitcoinsSel +=	"," + selectedCoinsArray[t]
-							items[t][0]=selectedCoinsArray[t].trim()
-						}
+			if (typeof selectedCoinsArray[0] != 'undefined'){
+				if (selectedCoinsArray[0].length > 1){
+					bitcoinsSel = selectedCoinsArray[0]
+					items[0][0]=selectedCoinsArray[0]
+					for (var t = 1; t < selectedCoinsArray.length ; t++){
+						bitcoinsSel +=	"," + selectedCoinsArray[t]
+						items[t][0]=selectedCoinsArray[t].trim()
 					}
 				}
-			//}
+			}
 			
 			bitcoin_selectedCoins.write(bitcoinsSel)
 

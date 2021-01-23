@@ -1,3 +1,8 @@
+1.0.4
+- different source, more options to scrape
+- bw in dimmode
+- ticker tile added (thanks to user "aabre") who wrote most of the Ticker Tile code
+
 1.0.3
 - updated gui for Toon 1
 

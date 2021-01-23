@@ -34,7 +34,7 @@ Tile {
             verticalCenter: parent.verticalCenter
 			horizontalCenter: parent.horizontalCenter
         }
-		color : "grey"
+		color: dimState? "white" : "grey" 
 		visible: ((tileArray[2]).length <1)  & (tileArray[0].length > 1)
 	}
 
@@ -48,14 +48,14 @@ Tile {
             verticalCenter: parent.verticalCenter
 			horizontalCenter: parent.horizontalCenter
         }
-		color : "grey"
+		color: dimState? "white" : "grey" 
 		visible: (tileArray[0].length <1)
 	}
 
 	Grid {
-		id: gridContainer1
+		id: regelTile1
 		columns: 2
-		spacing: 1
+		spacing: 5
 		visible: (tileArray[0]).length >1
 		
 		anchors {
@@ -64,43 +64,82 @@ Tile {
 			horizontalCenter: parent.horizontalCenter
 		}
 		Image {visible: (tileArray[0]).length>0;width:isNxt? 40:32; height:isNxt? 40:32; source: tileArray[1] }
-		Text {visible: (tileArray[0]).length>0;font.pixelSize: isNxt ? 25:20; font.family: qfont.semiBold.name; text: tileArray[0] }
+		Text {visible: (tileArray[0]).length>0;font.pixelSize: isNxt ? 25:20; font.family: qfont.semiBold.name; color: dimState? dimmableColors.clockTileColor : colors.clockTileColor ; text: tileArray[0] }
 	}
 
+/*
 	Grid {
-		id: gridContainer2
+		id: regelTile2
 		columns: 3
 		spacing: 3
 		visible: (tileArray[0]).length >1
 		
 		anchors {
-			top: gridContainer1.bottom
+			top: regelTile1.bottom
 			topMargin: isNxt? 10:8
 			horizontalCenter: parent.horizontalCenter
 		}
 		
-/*		
-		Text {visible: (tileArray[2]).length>0;font.pixelSize: isNxt ? 22:17; font.family: qfont.semiBold.name; text: "Waarde: " }
-		Text {visible: (tileArray[2]).length>0;font.pixelSize: isNxt ? 22:17; font.family: qfont.semiBold.name; text:tileArray[2] }
-		Text {visible: (tileArray[2]).length>0;font.pixelSize: isNxt ? 22:17; font.family: qfont.semiBold.name; text: " " }
-		Text {visible: (tileArray[2]).length>0;font.pixelSize: isNxt ? 22:17; font.family: qfont.semiBold.name; text: "24h: "}
-		Text {visible: (tileArray[2]).length>0;font.pixelSize: isNxt ? 22:17; font.family: qfont.semiBold.name; color: (tileArray[3] == "down")? "red" : "green" ; text: tileArray[4]}
-		Text {visible: (tileArray[2]).length>0;font.pixelSize: isNxt ? 22:17; font.family: qfont.semiBold.name; color: (tileArray[3] == "down")? "red" : "green" ; text: (tileArray[3] == "down")?  "v" : "^"}	
-		Text {visible: (tileArray[2]).length>0;font.pixelSize: isNxt ? 22:17; font.family: qfont.semiBold.name; text: "7d: "}
-		Text {visible: (tileArray[2]).length>0;font.pixelSize: isNxt ? 22:17; font.family: qfont.semiBold.name; color: (tileArray[5] == "down")? "red" : "green" ; text: tileArray[6]}
-		Text {visible: (tileArray[2]).length>0;font.pixelSize: isNxt ? 22:17; font.family: qfont.semiBold.name; color: (tileArray[5] == "down")? "red" : "green" ; text: (tileArray[5] == "down")?  "v" :  "^"}
-*/
-		Text {visible: (tileArray[2]).length>0;font.pixelSize: isNxt ? 22:17; font.family: qfont.semiBold.name; text: "Waarde: " }
-		Text {visible: (tileArray[2]).length>0;font.pixelSize: isNxt ? 22:17; font.family: qfont.semiBold.name; text:tileArray[2] }
-		Text {visible: (tileArray[2]).length>0;font.pixelSize: isNxt ? 22:17; font.family: qfont.semiBold.name; text: " " }
-		Text {visible: (tileArray[2]).length>0;font.pixelSize: isNxt ? 22:17; font.family: qfont.semiBold.name; text: "24h: "}
-		Text {visible: (tileArray[2]).length>0;font.pixelSize: isNxt ? 22:17; font.family: qfont.semiBold.name; color: (tileArray[3] == "down")? "red" : "green" ; text: tileArray[4]}
-		Text {visible: (tileArray[2]).length>0;font.pixelSize: isNxt ? 22:17; font.family: qfont.semiBold.name; text: " " }	
-		Text {visible: (tileArray[2]).length>0;font.pixelSize: isNxt ? 22:17; font.family: qfont.semiBold.name; text: "7d: "}
-		Text {visible: (tileArray[2]).length>0;font.pixelSize: isNxt ? 22:17; font.family: qfont.semiBold.name; color: (tileArray[5] == "down")? "red" : "green" ; text: tileArray[6]}
-		Text {visible: (tileArray[2]).length>0;font.pixelSize: isNxt ? 22:17; font.family: qfont.semiBold.name; text: " " }
+		
+		Text {visible: (tileArray[2]).length>0;font.pixelSize: isNxt ? 22:17; font.family: qfont.semiBold.name; color: dimState? dimmableColors.clockTileColor : colors.clockTileColor; text: "Waarde: " }
+		Text {visible: (tileArray[2]).length>0;font.pixelSize: isNxt ? 22:17; font.family: qfont.semiBold.name; color: dimState? dimmableColors.clockTileColor : colors.clockTileColor;text:tileArray[2] }
+		Text {visible: (tileArray[2]).length>0;font.pixelSize: isNxt ? 22:17; font.family: qfont.semiBold.name; color: dimState? dimmableColors.clockTileColor : colors.clockTileColor;text: " " }
+		Text {visible: (tileArray[2]).length>0;font.pixelSize: isNxt ? 22:17; font.family: qfont.semiBold.name; color: dimState? dimmableColors.clockTileColor : colors.clockTileColor;text: "24h: "}
+		Text {visible: (tileArray[2]).length>0;font.pixelSize: isNxt ? 22:17; font.family: qfont.semiBold.name; color: !dimState? (tileArray[3] == "down")? "red" : "green" : dimmableColors.clockTileColor; text: tileArray[4]}
+		Text {visible: (tileArray[2]).length>0;font.pixelSize: isNxt ? 22:17; font.family: qfont.semiBold.name; color: !dimState? (tileArray[3] == "down")? "red" : "green" : dimmableColors.clockTileColor; text: (tileArray[3] == "down")?  "v" : "^"}	
+
+		Text {visible: (tileArray[2]).length>0;font.pixelSize: isNxt ? 22:17; font.family: qfont.semiBold.name; color: dimState? dimmableColors.clockTileColor : colors.clockTileColor ;text: "Waarde: " }
+		Text {visible: (tileArray[2]).length>0;font.pixelSize: isNxt ? 22:17; font.family: qfont.semiBold.name; color: dimState? dimmableColors.clockTileColor : colors.clockTileColor ;text:tileArray[2] }
+		Text {visible: (tileArray[2]).length>0;font.pixelSize: isNxt ? 22:17; font.family: qfont.semiBold.name; color: dimState? dimmableColors.clockTileColor : colors.clockTileColor ;text: " " }
+		Text {visible: (tileArray[2]).length>0;font.pixelSize: isNxt ? 22:17; font.family: qfont.semiBold.name; color: dimState? dimmableColors.clockTileColor : colors.clockTileColor ;text: "24h: "}
+		Text {visible: (tileArray[2]).length>0;font.pixelSize: isNxt ? 22:17; font.family: qfont.semiBold.name; color: !dimState? (tileArray[3] == "down")? "red" : "green" : dimmableColors.clockTileColor ; text: tileArray[4]}
+		Text {visible: (tileArray[2]).length>0;font.pixelSize: isNxt ? 22:17; font.family: qfont.semiBold.name; color: dimState? dimmableColors.clockTileColor : colors.clockTileColor ;text: " " }	
+	
 
 	}
+*/
+	
+	
+
+   Text {
+		id: regelTile2
+		text: ""
+		font.pixelSize: isNxt? 22:18
+		font.family: qfont.bold.name
+		anchors {
+			top: regelTile1.bottom
+			topMargin: isNxt? 12:9
+			horizontalCenter: parent.horizontalCenter
+		}
+		color: dimState? dimmableColors.clockTileColor : app.colourBTC 
+		}
+
+   Text {
+		id: regelTile3
+		text: tileArray[2]
+		font.pixelSize: isNxt? 30:24
+		font.family: qfont.bold.name	
+		anchors {
+			top: regelTile2.bottom
+			horizontalCenter: parent.horizontalCenter
+		}
+		color: dimState? dimmableColors.clockTileColor : colors.clockTileColor
+   }
+
+   Text {
+		id: regelTile4
+		text: tileArray[4]
+		font.pixelSize: isNxt? 30:24
+		font.family: qfont.bold.name
+		anchors {
+			top: regelTile3.bottom
+			horizontalCenter: parent.horizontalCenter
+		}
+		color: !dimState? (tileArray[3] == "down")? "red" : "green" : dimmableColors.clockTileColor ; 
+   }
+
+
+
 
 /*	Rectangle { 
 		id: bulletCircle
