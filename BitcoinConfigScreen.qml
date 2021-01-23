@@ -7,10 +7,11 @@ Screen {
 	screenTitle: "Bitcoin App Setup"
 
 	property string coins: ""
-	property string coinsURL : "https://raw.githubusercontent.com/ToonSoftwareCollective/toonanimations/main/bitcoins.txt"
+	property string coinsURL : "https://raw.githubusercontent.com/ToonSoftwareCollective/toonanimations/main/bitcoins2.txt"
 	property variant  coinsArray : []
 	property variant  selectedCoinsArray
 	property int  numberofItems :0
+	property int  numberofItems2 :0
 	property string	selectedTileCoin: ""
 
 	
@@ -34,6 +35,7 @@ Screen {
 		for (var x in selectedCoinsArray){
 			listview2.model.append({name: selectedCoinsArray[x]})
 		}
+		numberofItems2 = selectedCoinsArray.length
 	}
 
 	function getCoins(){
@@ -162,8 +164,8 @@ Screen {
 
 		iconSource: "qrc:/tsc/down.png"
 		onClicked: {
-		    if (numberofItems>=listview1.currentIndex){
-                        listview1.currentIndex  = listview1.currentIndex +1
+		    if (numberofItems>listview1.currentIndex + 1){
+                   listview1.currentIndex  = listview1.currentIndex +1
             }
 		}	
 	}
@@ -184,17 +186,20 @@ Screen {
 			topMargin: isNxt? 5: 4
 			}
 		onClicked: {
-			var exists = false			
-			var selectedCoin = coinsArray[listview1.currentIndex].toLowerCase().trim()
-			for (var i in selectedCoinsArray){
-				if (selectedCoin == selectedCoinsArray[i].toLowerCase().trim()){
-					exists = true
+			if (numberofItems2<11){
+				var exists = false		
+				var selectedCoin = coinsArray[listview1.currentIndex].toLowerCase().trim()
+				for (var i in selectedCoinsArray){
+					if (selectedCoin == selectedCoinsArray[i].toLowerCase().trim()){
+						exists = true
+					}
+				}
+				if (!exists){
+					listview2.model.append({name: coinsArray[listview1.currentIndex]})
+					selectedCoinsArray.push(selectedCoin)
+					numberofItems2 = selectedCoinsArray.length
 				}
 			}
-			if (!exists){
-				listview2.model.append({name: coinsArray[listview1.currentIndex]})
-				selectedCoinsArray.push(selectedCoin)
-			}	
 		}
 	}
 
@@ -330,10 +335,9 @@ Screen {
 			leftMargin : isNxt? 3 : 2
 
 		}
-
 		iconSource: "qrc:/tsc/down.png"
 		onClicked: {
-		    if (numberofItems>=listview2.currentIndex){
+		    if (numberofItems2>listview2.currentIndex +1){
                         listview2.currentIndex  = listview2.currentIndex +1
             }
 		}	
@@ -357,8 +361,10 @@ Screen {
 			if (selectedCoinsArray[listview2.currentIndex].length >0 ){
 				listview2.model.remove(listview2.currentIndex)
 				selectedCoinsArray.splice(listview2.currentIndex, 1);
+				numberofItems2 = selectedCoinsArray.length
 			}
 		}
+		visible: selectedCoinsArray.length >0
 	}
 	
 	Column {
