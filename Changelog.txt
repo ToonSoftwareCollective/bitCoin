@@ -1,3 +1,6 @@
+1.0.5
+- source set to USD
+
 1.0.4
 - different source, more options to scrape
 - bw in dimmode
