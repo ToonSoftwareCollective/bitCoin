@@ -21,7 +21,8 @@ App {
 		property url 		bitcoinScreenUrl : "BitcoinScreen.qml"
 		property			BitcoinConfigScreen  bitcoinConfigScreen
 		property url 		bitcoinConfigScreenUrl : "BitcoinConfigScreen.qml"
-		property url 		scraperUrl : "https://www.worldcoinindex.com/setcurrency?currency=EUR"
+		//property url 		scraperUrl : "https://www.worldcoinindex.com/setcurrency?currency=EUR"
+		property url 		scraperUrl : "https://www.worldcoinindex.com"
 		property url 		imageBaseUrl : "https://www.worldcoinindex.com"
 		property variant 	items
 		property int 		numberofrows : 120
@@ -85,7 +86,7 @@ App {
 			} catch(e) {
 			}
 
-			//get the user settings from the system file
+			//get the  user settings from the system file
 			try {
 				bitcoinSettingsJson = JSON.parse(bitcoinSettingsFile.read())
 				selectedTileCoin = bitcoinSettingsJson['selectedTileCoin']
@@ -136,7 +137,7 @@ App {
 			xhr2.open("GET", scraperUrl, true); //check the feeds from the webpage
 			xhr2.onreadystatechange = function() {
 				if (xhr2.readyState === XMLHttpRequest.DONE) {
-					if (xhr2.status === 200) {
+					if (xhr2.status === 200 || xhr2.status === 300  || xhr2.status === 302) {
 						var response = xhr2.responseText
 						var reLength = response.length
 							var n10 = response.indexOf("<table id=\"myTable\" class=\"tablesorter")
@@ -214,10 +215,9 @@ App {
 								
 							}
 							bitcoinUpdated()
-							
-					   //}//site is valid
-					  // bitcoinUpdated()
-					}//xhr status = 200
+					}else{//xhr status = 200
+					   //console.log("*******************Bitcoin app website failed")
+					}
 				}//end of xhr2.readystate
 			}//xhr onreadystate
 			xhr2.send()
