@@ -86,7 +86,7 @@ App {
 			} catch(e) {
 			}
 
-			//get the user settings from the system file
+			//get the  user settings from the system file
 			try {
 				bitcoinSettingsJson = JSON.parse(bitcoinSettingsFile.read())
 				selectedTileCoin = bitcoinSettingsJson['selectedTileCoin']
